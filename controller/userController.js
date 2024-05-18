@@ -1,10 +1,14 @@
-import User from "../models/userModel.js";
+import User from "../model/userModel.js";
 import generateToken from "../utils/generateToken.js";
 
 // login
 const authUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "provide all fields " });
+    }
 
     const user = await User.findOne({ email });
 
@@ -26,6 +30,9 @@ const authUser = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "provide all fields " });
+    }
 
     const userExists = await User.findOne({ email });
 
@@ -43,6 +50,7 @@ const registerUser = async (req, res) => {
       generateToken(res, user._id);
 
       res.status(201).json({
+        message: "User Registered successfully ",
         _id: user._id,
         name: user.name,
         email: user.email,
